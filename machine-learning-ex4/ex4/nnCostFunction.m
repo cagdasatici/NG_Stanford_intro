@@ -79,6 +79,28 @@ end
 J=J+(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)))*lambda/(2*m);
 
 
+
+% Part 2: Backpropagation
+for t=1:m
+    a1=X(t,:)';
+    z2=Theta1*[1; a1];
+    a2=sigmoid(z2);
+    z3=Theta2*[1; a2];
+    a3=sigmoid(z3);
+    yk=zeros(length(a3),1); yk(y(t))=1;
+    delta3=a3-yk;
+    delta2=(Theta2'*delta3).*[1;sigmoidGradient(z2)];
+    delta2=delta2(2:end);
+    Theta1_grad=Theta1_grad+delta2*[1; a1]'/m;
+    Theta2_grad=Theta2_grad+delta3*[1; a2]'/m;
+end
+
+
+% Part 3: Add Regularization
+Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+lambda*Theta1(:,2:end)/m;
+Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+lambda*Theta2(:,2:end)/m;
+
+
 % -------------------------------------------------------------
 
 % =========================================================================
